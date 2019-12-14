@@ -21,7 +21,7 @@ class Day02Spec : FreeSpec() {
         }
 
         "file chunk" {
-            val output = Day02(File("src/test/resources/day02.txt")).executeProgram()
+            val output = Day02(File("src/test/resources/day02.txt")).executeProgram(12, 2)
             output.split(",")[0] shouldBe "3101878"
         }
     }

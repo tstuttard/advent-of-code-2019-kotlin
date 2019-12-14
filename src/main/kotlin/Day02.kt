@@ -13,25 +13,29 @@ const val ADDRESS2_POSITION = 2
 const val STORAGE_POSITION = 3
 
 class Day02 {
-    private var operations: MutableList<Int>
+    private var memory: MutableList<Int>
     constructor(program: String) {
-        operations = convertProgramToOperationsList(program)
+        memory = storeProgramInMemory(program)
     }
 
     constructor(program: File) {
-        operations = convertProgramToOperationsList(program.readText())
+        memory = storeProgramInMemory(program.readText())
     }
 
-    private fun convertProgramToOperationsList(operationsString: String): MutableList<Int> {
+    private fun storeProgramInMemory(operationsString: String): MutableList<Int> {
         return Pattern.compile(",").splitAsStream(operationsString).mapToInt { it.trim().toInt() }.toList().toMutableList()
     }
 
 
-    fun executeProgram(): String {
+    fun executeProgram(noun: Int? = null, verb: Int? = null): String {
 
-        var operationsPointer = 0
+        noun?.let { memory[1] = noun }
+
+        verb?.let { memory[2] = verb }
+
+        var instructionPointer = 0
         while (true) {
-            val operation: Operation = getOperation(operations[operationsPointer])
+            val operation: Operation = getOperation(memory[instructionPointer])
 
             if (operation is HaltOperation) {
                 break
@@ -39,13 +43,13 @@ class Day02 {
 
             operation as AddressOperation
 
-            operations = operation.perform(operations, operationsPointer)
-            operationsPointer = operation.moveOperationsPointer(operationsPointer)
+            memory = operation.perform(memory, instructionPointer)
+            instructionPointer = operation.moveOperationsPointer(instructionPointer)
         }
 
 
 
-        return operations.joinToString(separator = ",") { it.toString() }
+        return memory.joinToString(separator = ",") { it.toString() }
     }
 
     private fun getOperation(operationCode: Int): Operation {

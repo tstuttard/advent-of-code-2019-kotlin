@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="Day01Spec" tests="2" skipped="0" failures="0" errors="0" timestamp="2019-12-02T14:50:30" hostname="C02X80RUJHD5.local" time="0.021">
-  <properties/>
-  <testcase name="mass to fuel calculation" classname="Day01Spec" time="0.021"/>
-  <testcase name="mass to fuel total" classname="Day01Spec" time="0.005"/>
-  <system-out><![CDATA[3291760
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

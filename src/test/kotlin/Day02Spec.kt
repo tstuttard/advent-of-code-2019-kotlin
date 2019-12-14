@@ -1,22 +1,28 @@
-import io.kotlintest.data.suspend.forall
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.tables.row
-import java.math.BigDecimal
+import java.io.File
 
 class Day02Spec : FreeSpec() {
     init {
-        val day00 = Day01("src/test/resources/day00.txt")
-        "fill this in" {
-            forall(
-                // TODO("Test Data Here")
-            ) { mass: Int, expectedFuel: Int ->
-                TODO("Test Assertion Here")
-            }
+        "single chunk add operation" {
+            Day02("1,0,0,0,99").executeProgram() shouldBe "2,0,0,0,99"
         }
 
-        "fill this in" {
-            println()
+        "single chunk multiply operation" {
+            Day02("2,3,0,3,99").executeProgram() shouldBe "2,3,0,6,99"
+        }
+
+        "multiple chunk multiply operation with storage outside first chunk" {
+            Day02("2,4,4,5,99,0").executeProgram() shouldBe "2,4,4,5,99,9801"
+        }
+
+        "multiple chunk add operation where initial halt opcode changes" {
+            Day02("1,1,1,4,99,5,6,0,99").executeProgram() shouldBe "30,1,1,4,2,5,6,0,99"
+        }
+
+        "file chunk" {
+            val output = Day02(File("src/test/resources/day02.txt")).executeProgram()
+            output.split(",")[0] shouldBe "3101878"
         }
     }
 }

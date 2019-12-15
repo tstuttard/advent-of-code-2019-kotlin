@@ -7,11 +7,6 @@ const val PLUS_OPERATION_CODE = 1
 const val MULTIPLY_OPERATION_CODE = 2
 const val HALT_OPERATION_CODE = 99
 
-const val OPERATION_POSITION = 0
-const val ADDRESS1_POSITION = 1
-const val ADDRESS2_POSITION = 2
-const val STORAGE_POSITION = 3
-
 class Day02 {
     private lateinit var memory: MutableList<Int>
     private val program: String
@@ -37,16 +32,16 @@ class Day02 {
 
         var instructionPointer = 0
         while (true) {
-            val operation: Operation = getOperation(memory[instructionPointer])
+            val instruction: Instruction = getOperation(memory[instructionPointer])
 
-            if (operation is HaltOperation) {
+            if (instruction is HaltInstruction) {
                 break
             }
 
-            operation as AddressOperation
+            instruction as AddressInstruction
 
-            memory = operation.perform(memory, instructionPointer)
-            instructionPointer = operation.moveOperationsPointer(instructionPointer)
+            memory = instruction.perform(memory, instructionPointer)
+            instructionPointer = instruction.moveOperationsPointer(instructionPointer)
         }
 
 
@@ -54,7 +49,7 @@ class Day02 {
         return memory.joinToString(separator = ",") { it.toString() }
     }
 
-    private fun getOperation(operationCode: Int): Operation {
+    private fun getOperation(operationCode: Int): Instruction {
         return when (operationCode) {
             PLUS_OPERATION_CODE -> {
                 Plus()
@@ -63,7 +58,7 @@ class Day02 {
                 Multiply()
             }
             HALT_OPERATION_CODE -> {
-                HaltOperation()
+                HaltInstruction()
             }
             else -> {
                 throw RuntimeException("operationCode: $operationCode is not a valid operationCode.")
@@ -92,39 +87,39 @@ class Day02 {
 
 data class ProgramInput(val noun: Int, val verb: Int)
 
-class HaltOperation: Operation {
+class HaltInstruction: Instruction {
 
 }
 
-class Plus: AddressOperation
+class Plus: AddressInstruction
 {
-    override fun perform(operations: MutableList<Int>, operationsPointer: Int): MutableList<Int> {
-        val address1Value = operations[operations[operationsPointer + 1]]
-        val address2Value = operations[operations[operationsPointer + 2]]
-        val storageAddress = operations[operationsPointer + 3]
-        operations[storageAddress] = address1Value + address2Value
-        return operations
+    override fun perform(memory: MutableList<Int>, instructionPointer: Int): MutableList<Int> {
+        val address1Value = memory[memory[instructionPointer + 1]]
+        val address2Value = memory[memory[instructionPointer + 2]]
+        val storageAddress = memory[instructionPointer + 3]
+        memory[storageAddress] = address1Value + address2Value
+        return memory
     }
 
 }
 
-class Multiply: AddressOperation
+class Multiply: AddressInstruction
 {
-    override fun perform(operations: MutableList<Int>, operationsPointer: Int): MutableList<Int> {
-        val address1Value = operations[operations[operationsPointer + 1]]
-        val address2Value = operations[operations[operationsPointer + 2]]
-        val storageAddress = operations[operationsPointer + 3]
-        operations[storageAddress] = address1Value * address2Value
-        return operations
+    override fun perform(memory: MutableList<Int>, instructionPointer: Int): MutableList<Int> {
+        val address1Value = memory[memory[instructionPointer + 1]]
+        val address2Value = memory[memory[instructionPointer + 2]]
+        val storageAddress = memory[instructionPointer + 3]
+        memory[storageAddress] = address1Value * address2Value
+        return memory
     }
 }
 
-interface AddressOperation: Operation {
-    fun perform(operations: MutableList<Int>, operationsPointer:Int): MutableList<Int>
-    fun moveOperationsPointer(operationsPointer: Int): Int {
-        return operationsPointer + 4
+interface AddressInstruction: Instruction {
+    fun perform(memory: MutableList<Int>, instructionPointer:Int): MutableList<Int>
+    fun moveOperationsPointer(instructionPointer: Int): Int {
+        return instructionPointer + 4
     }
 }
 
-interface Operation {
+interface Instruction {
 }

@@ -72,19 +72,16 @@ class Day02 {
     }
 
     fun findInputsFromOutput(programOutput: Int): ProgramInput {
-        var noun = 0
-        while (noun <= 99) {
-            var verb = 0
-            while (verb <= 99) {
+
+        for (noun in 0..99) {
+            for (verb in 0..99) {
                 val programInput = ProgramInput(noun, verb)
                 storeProgramInMemory(this.program)
                 executeProgram(programInput)
                 if (memory[0] == programOutput) {
                     return programInput
                 }
-                verb++
             }
-            noun++
         }
 
         throw Exception("Unable to find noun and verb which causes a program output of $programOutput")

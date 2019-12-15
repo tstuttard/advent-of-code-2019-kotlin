@@ -21,8 +21,15 @@ class Day02Spec : FreeSpec() {
         }
 
         "file chunk" {
-            val output = Day02(File("src/test/resources/day02.txt")).executeProgram(12, 2)
+            val output = Day02(File("src/test/resources/day02.txt")).executeProgram(ProgramInput(12, 2))
             output.split(",")[0] shouldBe "3101878"
+        }
+
+        "find inputs that produce output" {
+            val expectedProgramInput = ProgramInput(84, 44)
+            Day02(File("src/test/resources/day02.txt")).findInputsFromOutput(19690720) shouldBe expectedProgramInput
+            expectedProgramInput.noun * 100 + expectedProgramInput.verb shouldBe 8444
+
         }
     }
 }

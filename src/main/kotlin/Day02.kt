@@ -13,25 +13,27 @@ const val ADDRESS2_POSITION = 2
 const val STORAGE_POSITION = 3
 
 class Day02 {
-    private var memory: MutableList<Int>
+    private lateinit var memory: MutableList<Int>
+    private val program: String
     constructor(program: String) {
-        memory = storeProgramInMemory(program)
+        this.program = program
+        storeProgramInMemory(this.program)
     }
 
     constructor(program: File) {
-        memory = storeProgramInMemory(program.readText())
+        this.program = program.readText()
+        storeProgramInMemory(this.program)
     }
 
-    private fun storeProgramInMemory(operationsString: String): MutableList<Int> {
-        return Pattern.compile(",").splitAsStream(operationsString).mapToInt { it.trim().toInt() }.toList().toMutableList()
+    private fun storeProgramInMemory(memory: String) {
+        this.memory = Pattern.compile(",").splitAsStream(memory).mapToInt { it.trim().toInt() }.toList().toMutableList()
     }
 
 
-    fun executeProgram(noun: Int? = null, verb: Int? = null): String {
+    fun executeProgram(programInput: ProgramInput? = null): String {
 
-        noun?.let { memory[1] = noun }
-
-        verb?.let { memory[2] = verb }
+        programInput?.let { memory[1] = programInput.noun }
+        programInput?.let { memory[2] = programInput.verb }
 
         var instructionPointer = 0
         while (true) {
@@ -69,8 +71,29 @@ class Day02 {
         }
     }
 
+    fun findInputsFromOutput(programOutput: Int): ProgramInput {
+        var noun = 0
+        while (noun <= 99) {
+            var verb = 0
+            while (verb <= 99) {
+                val programInput = ProgramInput(noun, verb)
+                storeProgramInMemory(this.program)
+                executeProgram(programInput)
+                if (memory[0] == programOutput) {
+                    return programInput
+                }
+                verb++
+            }
+            noun++
+        }
+
+        throw Exception("Unable to find noun and verb which causes a program output of $programOutput")
+    }
+
 
 }
+
+data class ProgramInput(val noun: Int, val verb: Int)
 
 class HaltOperation: Operation {
 

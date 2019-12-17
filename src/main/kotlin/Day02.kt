@@ -40,7 +40,7 @@ class Day02 {
 
             instruction as AddressInstruction
 
-            memory = instruction.perform(memory, instructionPointer)
+            instruction.perform(memory, instructionPointer)
             instructionPointer = instruction.moveOperationsPointer(instructionPointer)
         }
 
@@ -93,29 +93,28 @@ class HaltInstruction: Instruction {
 
 class Plus: AddressInstruction
 {
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int): MutableList<Int> {
+    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
         val address1Value = memory[memory[instructionPointer + 1]]
         val address2Value = memory[memory[instructionPointer + 2]]
         val storageAddress = memory[instructionPointer + 3]
         memory[storageAddress] = address1Value + address2Value
-        return memory
+        moveOperationsPointer(instructionPointer)
     }
 
 }
 
 class Multiply: AddressInstruction
 {
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int): MutableList<Int> {
+    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
         val address1Value = memory[memory[instructionPointer + 1]]
         val address2Value = memory[memory[instructionPointer + 2]]
         val storageAddress = memory[instructionPointer + 3]
         memory[storageAddress] = address1Value * address2Value
-        return memory
     }
 }
 
 interface AddressInstruction: Instruction {
-    fun perform(memory: MutableList<Int>, instructionPointer:Int): MutableList<Int>
+    fun perform(memory: MutableList<Int>, instructionPointer:Int)
     fun moveOperationsPointer(instructionPointer: Int): Int {
         return instructionPointer + 4
     }

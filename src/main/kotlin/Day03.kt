@@ -82,8 +82,10 @@ class WirePath(input: String) {
     fun findCrossedWires(wirePath2: WirePath): MutableMap<String, WireCoordinate> {
         val crossedWireCoordinates: MutableMap<String, WireCoordinate> = mutableMapOf()
 
+        // todo is there a better way to write this
         this.coordinates.forEach {(coordinateKey, coordinate) ->
             if (wirePath2.coordinates.containsKey(coordinateKey)) {
+                // todo figure out why the previous line doesn't stop the need for the question mark calls
                 val otherCoordinateDistance: Int = wirePath2.coordinates[coordinateKey]?.distanceFromStart ?: 0
                 crossedWireCoordinates[coordinateKey] = WireCoordinate(coordinate.distanceFromStart + otherCoordinateDistance, coordinate.point)
             }

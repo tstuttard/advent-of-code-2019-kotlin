@@ -1,3 +1,4 @@
+import com.sun.deploy.util.OrderedHashSet
 import javafx.geometry.Point2D
 import java.io.File
 import kotlin.math.absoluteValue
@@ -17,21 +18,18 @@ class Day03 {
     }
 
     fun calculateManhattanDistance(): Int? {
-        val crossedWireCoordinates: MutableSet<Point2D> = mutableSetOf()
-        wirePath1.coordinates.forEach {
-            if (wirePath2.coordinates.contains(it)) {
-                crossedWireCoordinates.add(it)
-            }
-        }
+        val crossedWireCoordinates: MutableMap<String, Pair<Int, Point2D>> = getCrossedWireCoordinates()
 
+
+//        todo ask about how better to handle null values here
 //        if (crossedWireCoordinates.isEmpty()) {
 //            throw Exception("Unable to find any points where the wires cross")
 //        }
 
-        val manhattanCoordinate = crossedWireCoordinates.minBy { it.x.absoluteValue + it.y.absoluteValue }
+        val manhattanCoordinate = crossedWireCoordinates.minBy { (_, coordinate) ->  coordinate.second.x.absoluteValue + coordinate.second.y.absoluteValue }
 
         if (manhattanCoordinate != null) {
-            val manhattanDistance = manhattanCoordinate.x.absoluteValue + manhattanCoordinate.y.absoluteValue
+            val manhattanDistance = manhattanCoordinate.value.second.x.absoluteValue + manhattanCoordinate.value.second.y.absoluteValue
 
             return manhattanDistance.toInt()
         }
@@ -39,21 +37,47 @@ class Day03 {
 
     }
 
+    fun calculateShortestPathToIntersection(): Int {
+        val crossedWireCoordinates = getCrossedWireCoordinates()
+
+        val shortestPathCoordinate = crossedWireCoordinates.minBy { (_, coordinate) -> coordinate.first }
+
+        if (shortestPathCoordinate != null) {
+            return shortestPathCoordinate.value.first
+        }
+
+        return 0
+
+    }
+
+    private fun getCrossedWireCoordinates(): MutableMap<String, Pair<Int, Point2D>> {
+        val crossedWireCoordinates: MutableMap<String, Pair<Int, Point2D>> = mutableMapOf()
+        wirePath1.coordinates.forEach {(coordinateKey, coordinate) ->
+            if (wirePath2.coordinates.containsKey(coordinateKey)) {
+                val otherCoordinateDistance: Int = wirePath2.coordinates[coordinateKey]?.first ?: 0
+                crossedWireCoordinates[coordinateKey] = Pair(coordinate.first + otherCoordinateDistance, coordinate.second)
+            }
+        }
+        return crossedWireCoordinates
+    }
+
 }
 
 
 class WirePath(input: String) {
-    var coordinates: MutableSet<Point2D> = mutableSetOf()
+    var coordinates: MutableMap<String, Pair<Int, Point2D>> = mutableMapOf()
     private val directions: List<Pair<Char, Double>> = input.split(",").map { it[0] to it.substring(1).toDouble() }
 
     private var currentCoordinate: Point2D = Point2D(0.0, 0.0)
 
 
     init {
+        var distanceFromStart = 0
         this.directions.forEach {(direction, length) ->
             for (i in 1..length.toInt()) {
+                distanceFromStart++
                 this.currentCoordinate = getNextCoordinate(direction)
-                this.coordinates.add(this.currentCoordinate)
+                this.coordinates["${this.currentCoordinate.x}${this.currentCoordinate.y}"] = Pair(distanceFromStart, this.currentCoordinate)
             }
         }
     }

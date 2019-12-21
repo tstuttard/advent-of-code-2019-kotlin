@@ -18,7 +18,7 @@ class Day03 {
     }
 
     fun calculateManhattanDistance(): Int? {
-        val crossedWireCoordinates: MutableMap<String, WireCoordinate> = getCrossedWireCoordinates()
+        val crossedWireCoordinates = wirePath1.findCrossedWires(wirePath2)
 
 
 //        todo ask about how better to handle null values here
@@ -36,7 +36,7 @@ class Day03 {
     }
 
     fun calculateShortestPathToIntersection(): Int {
-        val crossedWireCoordinates = getCrossedWireCoordinates()
+        val crossedWireCoordinates = wirePath1.findCrossedWires(wirePath2)
 
         val shortestPathCoordinate = crossedWireCoordinates.minBy { (_, coordinate) -> coordinate.distanceFromStart }
 
@@ -45,18 +45,6 @@ class Day03 {
         }
 
         throw Exception("Unable to find any crossed wires")
-    }
-
-    private fun getCrossedWireCoordinates(): MutableMap<String, WireCoordinate> {
-        val crossedWireCoordinates: MutableMap<String, WireCoordinate> = mutableMapOf()
-
-        wirePath1.coordinates.forEach {(coordinateKey, coordinate) ->
-            if (wirePath2.coordinates.containsKey(coordinateKey)) {
-                val otherCoordinateDistance: Int = wirePath2.coordinates[coordinateKey]?.distanceFromStart ?: 0
-                crossedWireCoordinates[coordinateKey] = WireCoordinate(coordinate.distanceFromStart + otherCoordinateDistance, coordinate.point)
-            }
-        }
-        return crossedWireCoordinates
     }
 
 }
@@ -89,6 +77,18 @@ class WirePath(input: String) {
             else -> throw Exception("Unable to process direction: $direction")
 
         }
+    }
+
+    fun findCrossedWires(wirePath2: WirePath): MutableMap<String, WireCoordinate> {
+        val crossedWireCoordinates: MutableMap<String, WireCoordinate> = mutableMapOf()
+
+        this.coordinates.forEach {(coordinateKey, coordinate) ->
+            if (wirePath2.coordinates.containsKey(coordinateKey)) {
+                val otherCoordinateDistance: Int = wirePath2.coordinates[coordinateKey]?.distanceFromStart ?: 0
+                crossedWireCoordinates[coordinateKey] = WireCoordinate(coordinate.distanceFromStart + otherCoordinateDistance, coordinate.point)
+            }
+        }
+        return crossedWireCoordinates
     }
 
 }

@@ -18,7 +18,7 @@ class Day03 {
     }
 
     fun calculateManhattanDistance(): Int? {
-        val crossedWireCoordinates: MutableMap<String, Pair<Int, Point2D>> = getCrossedWireCoordinates()
+        val crossedWireCoordinates: MutableMap<String, WireCoordinate> = getCrossedWireCoordinates()
 
 
 //        todo ask about how better to handle null values here
@@ -26,36 +26,34 @@ class Day03 {
 //            throw Exception("Unable to find any points where the wires cross")
 //        }
 
-        val manhattanCoordinate = crossedWireCoordinates.minBy { (_, coordinate) ->  coordinate.second.x.absoluteValue + coordinate.second.y.absoluteValue }
+        val manhattanCoordinate = crossedWireCoordinates.minBy { (_, coordinate) ->  coordinate.getManhattanDistance() }?.value
 
         if (manhattanCoordinate != null) {
-            val manhattanDistance = manhattanCoordinate.value.second.x.absoluteValue + manhattanCoordinate.value.second.y.absoluteValue
-
-            return manhattanDistance.toInt()
+            return manhattanCoordinate.getManhattanDistance()
         }
-        return 0
 
+        throw Exception("Unable to find any crossed wires")
     }
 
     fun calculateShortestPathToIntersection(): Int {
         val crossedWireCoordinates = getCrossedWireCoordinates()
 
-        val shortestPathCoordinate = crossedWireCoordinates.minBy { (_, coordinate) -> coordinate.first }
+        val shortestPathCoordinate = crossedWireCoordinates.minBy { (_, coordinate) -> coordinate.distanceFromStart }
 
         if (shortestPathCoordinate != null) {
-            return shortestPathCoordinate.value.first
+            return shortestPathCoordinate.value.distanceFromStart
         }
 
-        return 0
-
+        throw Exception("Unable to find any crossed wires")
     }
 
-    private fun getCrossedWireCoordinates(): MutableMap<String, Pair<Int, Point2D>> {
-        val crossedWireCoordinates: MutableMap<String, Pair<Int, Point2D>> = mutableMapOf()
+    private fun getCrossedWireCoordinates(): MutableMap<String, WireCoordinate> {
+        val crossedWireCoordinates: MutableMap<String, WireCoordinate> = mutableMapOf()
+
         wirePath1.coordinates.forEach {(coordinateKey, coordinate) ->
             if (wirePath2.coordinates.containsKey(coordinateKey)) {
-                val otherCoordinateDistance: Int = wirePath2.coordinates[coordinateKey]?.first ?: 0
-                crossedWireCoordinates[coordinateKey] = Pair(coordinate.first + otherCoordinateDistance, coordinate.second)
+                val otherCoordinateDistance: Int = wirePath2.coordinates[coordinateKey]?.distanceFromStart ?: 0
+                crossedWireCoordinates[coordinateKey] = WireCoordinate(coordinate.distanceFromStart + otherCoordinateDistance, coordinate.point)
             }
         }
         return crossedWireCoordinates
@@ -65,7 +63,7 @@ class Day03 {
 
 
 class WirePath(input: String) {
-    var coordinates: MutableMap<String, Pair<Int, Point2D>> = mutableMapOf()
+    var coordinates: MutableMap<String, WireCoordinate> = mutableMapOf()
     private val directions: List<Pair<Char, Double>> = input.split(",").map { it[0] to it.substring(1).toDouble() }
 
     private var currentCoordinate: Point2D = Point2D(0.0, 0.0)
@@ -77,7 +75,7 @@ class WirePath(input: String) {
             for (i in 1..length.toInt()) {
                 distanceFromStart++
                 this.currentCoordinate = getNextCoordinate(direction)
-                this.coordinates["${this.currentCoordinate.x}${this.currentCoordinate.y}"] = Pair(distanceFromStart, this.currentCoordinate)
+                this.coordinates["${this.currentCoordinate.x}${this.currentCoordinate.y}"] = WireCoordinate(distanceFromStart, this.currentCoordinate)
             }
         }
     }
@@ -93,4 +91,10 @@ class WirePath(input: String) {
         }
     }
 
+}
+
+data class WireCoordinate(val distanceFromStart: Int, val point: Point2D) {
+    fun getManhattanDistance(): Int {
+        return point.x.absoluteValue.toInt() + point.y.absoluteValue.toInt()
+    }
 }

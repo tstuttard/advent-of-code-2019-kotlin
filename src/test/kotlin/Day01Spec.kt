@@ -1,25 +1,23 @@
-import io.kotlintest.data.suspend.forall
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FreeSpec
-import io.kotlintest.tables.row
+import org.spekframework.spek2.Spek
 import java.math.BigDecimal
+import kotlin.test.assertEquals
 
-class Day01Spec : FreeSpec() {
-    init {
-        val day01 = Day01("src/test/resources/day01.txt")
-        "mass to fuel calculation" {
-            forall(
-                row(12, 2),
-                row(14,2),
-                row(1969, 654),
-                row(100756, 33583)
-            ) { mass: Int, expectedFuel: Int ->
-                day01.calculateFuel(BigDecimal(mass)) shouldBe BigDecimal(expectedFuel)
-            }
-        }
+class Day01Spec : Spek({
 
-        "mass to fuel total" {
-            println(day01.totalFuel())
+    val day01 by memoized { Day01("src/test/resources/day01.txt") }
+
+    mapOf(
+        12 to 2,
+        14 to 2,
+        1969 to 654,
+        100756 to 33583
+    ).forEach { (mass, expectedFuel) ->
+        test("$mass mass uses $expectedFuel fuel") {
+            assertEquals(day01.calculateFuel(BigDecimal(mass)), BigDecimal(expectedFuel))
         }
     }
-}
+
+    test("mass to fuel total") {
+        assertEquals(day01.totalFuel(), BigDecimal(3291760))
+    }
+})

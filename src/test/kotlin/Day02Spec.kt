@@ -1,35 +1,33 @@
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FreeSpec
+import org.spekframework.spek2.Spek
 import java.io.File
+import kotlin.test.assertEquals
 
-class Day02Spec : FreeSpec() {
-    init {
-        "single chunk add operation" {
-            Day02("1,0,0,0,99").executeProgram() shouldBe "2,0,0,0,99"
-        }
-
-        "single chunk multiply operation" {
-            Day02("2,3,0,3,99").executeProgram() shouldBe "2,3,0,6,99"
-        }
-
-        "multiple chunk multiply operation with storage outside first chunk" {
-            Day02("2,4,4,5,99,0").executeProgram() shouldBe "2,4,4,5,99,9801"
-        }
-
-        "multiple chunk add operation where initial halt opcode changes" {
-            Day02("1,1,1,4,99,5,6,0,99").executeProgram() shouldBe "30,1,1,4,2,5,6,0,99"
-        }
-
-        "file chunk" {
-            val output = Day02(File("src/test/resources/day02.txt")).executeProgram(ProgramInput(12, 2))
-            output.split(",")[0] shouldBe "3101878"
-        }
-
-        "find inputs that produce output" {
-            val expectedProgramInput = ProgramInput(84, 44)
-            Day02(File("src/test/resources/day02.txt")).findInputsFromOutput(19690720) shouldBe expectedProgramInput
-            expectedProgramInput.noun * 100 + expectedProgramInput.verb shouldBe 8444
-
-        }
+class Day02Spec : Spek({
+    test("single chunk add operation") {
+        assertEquals(Day02("1,0,0,0,99").executeProgram(), "2,0,0,0,99")
     }
-}
+
+    test("single chunk multiply operation") {
+        assertEquals(Day02("2,3,0,3,99").executeProgram(), "2,3,0,6,99")
+    }
+
+    test("multiple chunk multiply operation with storage outside first chunk") {
+        assertEquals(Day02("2,4,4,5,99,0").executeProgram(), "2,4,4,5,99,9801")
+    }
+
+    test("multiple chunk add operation where initial halt opcode changes") {
+        assertEquals(Day02("1,1,1,4,99,5,6,0,99").executeProgram(), "30,1,1,4,2,5,6,0,99")
+    }
+
+    test("file chunk") {
+        val output = Day02(File("src/test/resources/day02.txt")).executeProgram(ProgramInput(12, 2))
+        assertEquals(output.split(",")[0], "3101878")
+    }
+
+    test("find inputs that produce output") {
+        val expectedProgramInput = ProgramInput(84, 44)
+        assertEquals(Day02(File("src/test/resources/day02.txt")).findInputsFromOutput(19690720), expectedProgramInput)
+        assertEquals(expectedProgramInput.noun * 100 + expectedProgramInput.verb, 8444)
+
+    }
+})

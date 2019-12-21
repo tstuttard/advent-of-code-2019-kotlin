@@ -1,22 +1,18 @@
-import io.kotlintest.data.suspend.forall
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FreeSpec
-import io.kotlintest.tables.row
+import org.spekframework.spek2.Spek
 import java.math.BigDecimal
+import kotlin.test.assertEquals
 
-class Day00TemplateSpec : FreeSpec() {
-    init {
-        val day00 = Day01("src/test/resources/day00.txt")
-        "fill this in" {
-            forall(
-                // TODO("Test Data Here")
-            ) { variable1: Int, variable2: Int ->
-                TODO("Test Assertion Here")
-            }
-        }
+class Day00TemplateSpec : Spek({
 
-        "fill this in" {
-            println()
-        }
+    val day00 by memoized { Day01("src/test/resources/day00.txt") }
+
+
+    test("fill me in") {
+//        assertEquals(day00.calculateFuel(BigDecimal(mass)), BigDecimal(expectedFuel))
     }
-}
+
+
+    test("fill me in too") {
+        // TODO fill me in
+    }
+})

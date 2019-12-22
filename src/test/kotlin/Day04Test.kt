@@ -41,8 +41,8 @@ class Day04Test : Spek({
     }
 
 
-    test("fill me in too") {
+    test("password range") {
         val validPasswords = day04.findValidPasswords("158126-624574")
-        assertEquals(0, validPasswords.count())
+        assertEquals(1131, validPasswords.count())
     }
 })

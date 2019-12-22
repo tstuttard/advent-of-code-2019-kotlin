@@ -32,17 +32,8 @@ class Day04 {
             }
         }
 
-        if (groupedCharacters.count { it.second == 2 } == 0) {
-            return false
-        }
+        return groupedCharacters.count { it.second == 2 } > 0 && isSameOrHasIncreased
 
-        if (!isSameOrHasIncreased) {
-            return false
-        }
-
-
-
-        return true
     }
 
     fun findValidPasswords(passwordRange: String): List<String> {

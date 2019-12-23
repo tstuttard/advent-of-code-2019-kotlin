@@ -4,7 +4,7 @@ import org.spekframework.spek2.Spek
 import java.io.File
 import kotlin.test.assertEquals
 
-class Day02Spec : Spek({
+class IntcodeComputerTest : Spek({
     test("single chunk add operation") {
         assertEquals("2,0,0,0,99", IntcodeComputer("1,0,0,0,99").executeProgram())
     }
@@ -28,7 +28,7 @@ class Day02Spec : Spek({
                 2
             )
         )
-        assertEquals("3101878", output.split(",")[0])
+        assertEquals(output.split(",")[0], "3101878")
     }
 
     test("find inputs that produce output") {
@@ -37,4 +37,13 @@ class Day02Spec : Spek({
         assertEquals(8444, expectedProgramInput.noun * 100 + expectedProgramInput.verb)
 
     }
+
+//    test("store with opcode 3") {
+//        assertEquals("5,0,99", IntcodeComputer("3,0,99").executeProgram(5))
+//    }
+//
+//
+//    test("output with opcode 4") {
+//        assertEquals("5", IntcodeComputer("4,3,99,6").executeProgram(5))
+//    }
 })

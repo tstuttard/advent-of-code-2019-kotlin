@@ -8,31 +8,30 @@ class Day04 {
 
         var isSameOrHasIncreased = true
 
-        val groupedCharacters = mutableListOf<Pair<Char, Int>>()
+        val groupedCharacters = mutableListOf<GroupedCharacterCount>()
         var currentListPointer = 0
 
         for ((index, character) in possiblePassword.withIndex()) {
 
             if (index == 0) {
-                groupedCharacters.add(Pair(character, 1))
+                groupedCharacters.add(GroupedCharacterCount(character))
                 continue
             }
 
-            if (character == groupedCharacters[currentListPointer].first) {
-                val characterCount = groupedCharacters[currentListPointer].second + 1
-                groupedCharacters[currentListPointer] = Pair(character, characterCount)
+            if (character == groupedCharacters[currentListPointer].character) {
+                groupedCharacters[currentListPointer].increaseCount()
             } else {
-                groupedCharacters.add(Pair(character, 1))
+                groupedCharacters.add(GroupedCharacterCount(character))
                 currentListPointer++
             }
 
 
-            if (character.toInt() < possiblePassword[index-1].toInt()) {
+            if (character.toInt() < possiblePassword[index - 1].toInt()) {
                 isSameOrHasIncreased = false
             }
         }
 
-        return groupedCharacters.count { it.second == 2 } > 0 && isSameOrHasIncreased
+        return groupedCharacters.count { it.count == 2 } > 0 && isSameOrHasIncreased
 
     }
 
@@ -44,6 +43,17 @@ class Day04 {
         val passwords = (passwordStart.toInt()..passwordEnd.toInt()).map { it.toString() }
 
         return passwords.filter { isValidPassword(it) }
+    }
+
+}
+
+data class GroupedCharacterCount(val character: Char) {
+
+    var count = 1
+        private set
+
+    fun increaseCount() {
+        count++
     }
 
 }

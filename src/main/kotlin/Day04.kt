@@ -1,8 +1,7 @@
 class Day04 {
-    fun isValidPassword(possiblePassword: String): Boolean {
 
-
-        if (possiblePassword.length != 6) {
+    fun isValidPassword(password: String): Boolean {
+        if (password.length != 6) {
             return false
         }
 
@@ -11,7 +10,7 @@ class Day04 {
         val groupedCharacters = mutableListOf<GroupedCharacterCount>()
         var currentListPointer = 0
 
-        for ((index, character) in possiblePassword.withIndex()) {
+        for ((index, character) in password.withIndex()) {
 
             if (index == 0) {
                 groupedCharacters.add(GroupedCharacterCount(character))
@@ -26,7 +25,7 @@ class Day04 {
             }
 
 
-            if (character.toInt() < possiblePassword[index - 1].toInt()) {
+            if (character < password[index - 1]) {
                 isSameOrHasIncreased = false
             }
         }

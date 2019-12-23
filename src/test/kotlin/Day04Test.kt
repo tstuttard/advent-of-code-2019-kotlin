@@ -12,7 +12,7 @@ class Day04Test : Spek({
         assertFalse { day04.isValidPassword("11111") }
     }
 
-    test("not enough decreasing pair of digits") {
+    test("decreasing pair of digits") {
         assertFalse { day04.isValidPassword("223450") }
     }
 

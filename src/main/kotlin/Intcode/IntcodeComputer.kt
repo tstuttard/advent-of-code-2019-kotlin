@@ -6,7 +6,10 @@ import java.util.regex.Pattern
 import kotlin.streams.toList
 
 class IntcodeComputer {
+    private var input: Int = 0
+    private val programOutput: ProgramOutput = ProgramOutput(0)
     private lateinit var memory: MutableList<Int>
+
     private val program: String
     constructor(program: String) {
         this.program = program
@@ -22,12 +25,31 @@ class IntcodeComputer {
         this.memory = Pattern.compile(",").splitAsStream(memory).mapToInt { it.trim().toInt() }.toList().toMutableList()
     }
 
+    fun executeProgram(programInput: Int): Int {
+        input = programInput
+        execute()
+
+
+
+        return programOutput.value
+    }
+
 
     fun executeProgram(programInput: ProgramInput? = null): String {
 
         programInput?.let { memory[1] = programInput.noun }
         programInput?.let { memory[2] = programInput.verb }
 
+        execute()
+
+
+
+        return memoryAsString()
+    }
+
+    fun memoryAsString() = memory.joinToString(separator = ",") { it.toString() }
+
+    private fun execute() {
         var instructionPointer = 0
         while (true) {
             val instruction: Instruction = getOperation(memory[instructionPointer])
@@ -41,10 +63,6 @@ class IntcodeComputer {
             instruction.perform(memory, instructionPointer)
             instructionPointer = instruction.moveOperationsPointer(instructionPointer)
         }
-
-
-
-        return memory.joinToString(separator = ",") { it.toString() }
     }
 
     private fun getOperation(operationCode: Int): Instruction {
@@ -54,6 +72,12 @@ class IntcodeComputer {
             }
             MULTIPLY_OPERATION_CODE -> {
                 Multiply()
+            }
+            STORE_OPERATION_CODE -> {
+                Store(input)
+            }
+            OUTPUT_OPERATION_CODE -> {
+                Output(programOutput)
             }
             HALT_OPERATION_CODE -> {
                 HaltInstruction()

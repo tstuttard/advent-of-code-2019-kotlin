@@ -79,6 +79,9 @@ class IntcodeComputer {
             ONE_DIGIT_OUTPUT_OPERATION_CODE, OUTPUT_OPERATION_CODE -> {
                 Output(operationCode, programOutput)
             }
+            ONE_DIGIT_EQUALS_OPERATION_CODE, EQUALS_OPERATION_CODE -> {
+                Equals(operationCode)
+            }
             HALT_OPERATION_CODE -> {
                 HaltInstruction()
             }

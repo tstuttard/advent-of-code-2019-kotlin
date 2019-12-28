@@ -41,4 +41,9 @@ class IntcodeComputerTest : Spek({
         assertEquals(7566643, IntcodeComputer(File("src/test/resources/day05.txt")).executeProgram(1))
     }
 
+    test("equal to opcode 8") {
+        assertEquals(1, IntcodeComputer("3,9,8,9,10,9,4,9,99,-1,8").executeProgram(8))
+        assertEquals(0, IntcodeComputer("3,9,8,9,10,9,4,9,99,-1,8").executeProgram(9))
+    }
+
 })

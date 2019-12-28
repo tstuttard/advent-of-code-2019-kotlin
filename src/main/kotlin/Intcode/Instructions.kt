@@ -8,6 +8,8 @@ const val STORE_OPERATION_CODE = "03"
 const val ONE_DIGIT_STORE_OPERATION_CODE = "3"
 const val OUTPUT_OPERATION_CODE = "04"
 const val ONE_DIGIT_OUTPUT_OPERATION_CODE = "4"
+const val EQUALS_OPERATION_CODE = "08"
+const val ONE_DIGIT_EQUALS_OPERATION_CODE = "8"
 const val HALT_OPERATION_CODE = "99"
 
 data class ProgramInput(val noun: Int, val verb: Int)
@@ -41,6 +43,19 @@ class Multiply(operationCode: String) : BaseInstruction(operationCode), AddressI
         val storageAddress = memory[instructionPointer + 3]
         memory[storageAddress] = firstParameterValue * secondParameterValue
     }
+}
+
+class Equals(operationCode: String): BaseInstruction(operationCode), AddressInstruction
+{
+    override val numberOfParameters: Int = 4
+    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
+        val storageAddress = memory[instructionPointer + 3]
+        memory[storageAddress] = if (firstParameterValue == secondParameterValue) 1 else 0
+    }
+
+
 }
 
 class Store(operationCode: String, private val input: Int) : BaseInstruction(operationCode),AddressInstruction {

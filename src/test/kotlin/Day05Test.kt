@@ -41,14 +41,25 @@ class IntcodeComputerTest : Spek({
         assertEquals(7566643, IntcodeComputer(File("src/test/resources/day05.txt")).executeProgram(1))
     }
 
+    test("less than opcode 7") {
+        assertEquals(1, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(7))
+        assertEquals(0, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(8))
+    }
+
     test("equal to opcode 8") {
         assertEquals(1, IntcodeComputer("3,9,8,9,10,9,4,9,99,-1,8").executeProgram(8))
         assertEquals(0, IntcodeComputer("3,9,8,9,10,9,4,9,99,-1,8").executeProgram(9))
     }
 
-    test("less than opcode 9") {
-        assertEquals(1, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(7))
-        assertEquals(0, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(8))
+
+    test("immediate mode less than") {
+        assertEquals(1, IntcodeComputer("3,3,1107,-1,8,3,4,3,99").executeProgram(7))
+        assertEquals(0, IntcodeComputer("3,3,1107,-1,8,3,4,3,99").executeProgram(8))
+    }
+
+    test("immediate mode equal to") {
+        assertEquals(1, IntcodeComputer("3,3,1108,-1,8,3,4,3,99").executeProgram(8))
+        assertEquals(0, IntcodeComputer("3,3,1108,-1,8,3,4,3,99").executeProgram(9))
     }
 
 })

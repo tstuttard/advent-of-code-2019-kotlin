@@ -46,4 +46,9 @@ class IntcodeComputerTest : Spek({
         assertEquals(0, IntcodeComputer("3,9,8,9,10,9,4,9,99,-1,8").executeProgram(9))
     }
 
+    test("less than opcode 9") {
+        assertEquals(1, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(7))
+        assertEquals(0, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(8))
+    }
+
 })

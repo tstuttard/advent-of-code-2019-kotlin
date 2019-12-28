@@ -21,11 +21,12 @@ class Plus(operationCode: String) : BaseInstruction(operationCode), AddressInstr
     override val numberOfParameters: Int = 4
 
     override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val address1Value = memory[memory[instructionPointer + 1]]
-        val address2Value = memory[memory[instructionPointer + 2]]
+
+
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
         val storageAddress = memory[instructionPointer + 3]
-        memory[storageAddress] = address1Value + address2Value
-        moveOperationsPointer(instructionPointer)
+        memory[storageAddress] = firstParameterValue + secondParameterValue
     }
 
 }
@@ -35,10 +36,10 @@ class Multiply(operationCode: String) : BaseInstruction(operationCode), AddressI
     override val numberOfParameters: Int = 4
 
     override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val address1Value = memory[memory[instructionPointer + 1]]
-        val address2Value = memory[memory[instructionPointer + 2]]
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
         val storageAddress = memory[instructionPointer + 3]
-        memory[storageAddress] = address1Value * address2Value
+        memory[storageAddress] = firstParameterValue * secondParameterValue
     }
 }
 

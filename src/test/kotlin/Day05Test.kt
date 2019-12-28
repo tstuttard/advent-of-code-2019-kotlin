@@ -17,7 +17,12 @@ class IntcodeComputerTest : Spek({
     }
 
 
-    test("output with opcode 4") {
+    test("store and input ") {
         assertEquals(30, IntcodeComputer("3,0,4,0,99").executeProgram(30))
     }
+
+    test("immediate mode for output") {
+        assertEquals(10, IntcodeComputer("4,0,104,10,99").executeProgram(30))
+    }
+
 })

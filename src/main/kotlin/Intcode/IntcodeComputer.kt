@@ -52,7 +52,7 @@ class IntcodeComputer {
     private fun execute() {
         var instructionPointer = 0
         while (true) {
-            val instruction: Instruction = getOperation(memory[instructionPointer])
+            val instruction: Instruction = getOperation(memory[instructionPointer].toString())
 
             if (instruction is HaltInstruction) {
                 break
@@ -65,25 +65,25 @@ class IntcodeComputer {
         }
     }
 
-    private fun getOperation(operationCode: Int): Instruction {
-        return when (operationCode) {
-            PLUS_OPERATION_CODE -> {
-                Plus()
+    private fun getOperation(operationCode: String): Instruction {
+        return when (operationCode.takeLast(2)) {
+            ONE_DIGIT_PLUS_OPERATION_CODE, PLUS_OPERATION_CODE -> {
+                Plus(operationCode)
             }
-            MULTIPLY_OPERATION_CODE -> {
-                Multiply()
+            ONE_DIGIT_MULTIPLY_OPERATION_CODE, MULTIPLY_OPERATION_CODE -> {
+                Multiply(operationCode)
             }
-            STORE_OPERATION_CODE -> {
-                Store(input)
+            ONE_DIGIT_STORE_OPERATION_CODE, STORE_OPERATION_CODE -> {
+                Store(operationCode, input)
             }
-            OUTPUT_OPERATION_CODE -> {
-                Output(programOutput)
+            ONE_DIGIT_OUTPUT_OPERATION_CODE, OUTPUT_OPERATION_CODE -> {
+                Output(operationCode, programOutput)
             }
             HALT_OPERATION_CODE -> {
                 HaltInstruction()
             }
             else -> {
-                throw RuntimeException("operationCode: $operationCode is not a valid operationCode.")
+                throw RuntimeException("operationCode: ${operationCode.takeLast(2)} is not a valid operationCode.")
             }
         }
     }

@@ -41,6 +41,27 @@ class IntcodeComputerTest : Spek({
         assertEquals(7566643, IntcodeComputer(File("src/test/resources/day05.txt")).executeProgram(1))
     }
 
+    test("jump if true opcode 5") {
+        assertEquals(1, IntcodeComputer("3,12,5,12,15,1,13,14,13,4,13,99,-1,0,1,9").executeProgram(0))
+        assertEquals(0, IntcodeComputer("3,12,5,12,15,1,13,14,13,4,13,99,-1,0,1,9").executeProgram(8))
+    }
+
+    test("immediate mode jump if true") {
+        assertEquals(0, IntcodeComputer("3,3,1105,-1,9,1101,0,0,12,4,12,99,1").executeProgram(0))
+        assertEquals(1, IntcodeComputer("3,3,1105,-1,9,1101,0,0,12,4,12,99,1").executeProgram(8))
+    }
+
+    test("jump if false opcode 6") {
+        assertEquals(0, IntcodeComputer("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9").executeProgram(0))
+        assertEquals(1, IntcodeComputer("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9").executeProgram(8))
+    }
+
+
+    test("immediate mode jump if false") {
+        assertEquals(1, IntcodeComputer("3,3,1106,-1,9,1101,0,0,12,4,12,99,1").executeProgram(0))
+        assertEquals(0, IntcodeComputer("3,3,1106,-1,9,1101,0,0,12,4,12,99,1").executeProgram(8))
+    }
+
     test("less than opcode 7") {
         assertEquals(1, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(7))
         assertEquals(0, IntcodeComputer("3,9,7,9,10,9,4,9,99,-1,8").executeProgram(8))
@@ -62,4 +83,17 @@ class IntcodeComputerTest : Spek({
         assertEquals(0, IntcodeComputer("3,3,1108,-1,8,3,4,3,99").executeProgram(9))
     }
 
+
+    test("large example") {
+        val program =
+            "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99"
+
+        assertEquals(999, IntcodeComputer(program).executeProgram(7))
+        assertEquals(1000, IntcodeComputer(program).executeProgram(8))
+        assertEquals(1001, IntcodeComputer(program).executeProgram(9))
+    }
+
+    test("diagnostic test suite for system id 5") {
+        assertEquals(9265694, IntcodeComputer(File("src/test/resources/day05.txt")).executeProgram(5))
+    }
 })

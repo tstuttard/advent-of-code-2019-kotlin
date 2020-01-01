@@ -50,9 +50,9 @@ class IntcodeComputer {
     fun memoryAsString() = memory.joinToString(separator = ",") { it.toString() }
 
     private fun execute() {
-        var instructionPointer = 0
+        val instructionPointer = InstructionPointer()
         while (true) {
-            val instruction: Instruction = getOperation(memory[instructionPointer].toString())
+            val instruction: Instruction = getOperation(memory[instructionPointer.position].toString())
 
             if (instruction is HaltInstruction) {
                 break
@@ -61,7 +61,6 @@ class IntcodeComputer {
             instruction as AddressInstruction
 
             instruction.perform(memory, instructionPointer)
-            instructionPointer = instruction.moveOperationsPointer(instructionPointer)
         }
     }
 
@@ -78,6 +77,12 @@ class IntcodeComputer {
             }
             ONE_DIGIT_OUTPUT_OPERATION_CODE, OUTPUT_OPERATION_CODE -> {
                 Output(operationCode, programOutput)
+            }
+            ONE_DIGIT_JUMP_IF_FALSE, JUMP_IF_FALSE -> {
+                JumpIfFalse(operationCode)
+            }
+            ONE_DIGIT_JUMP_IF_TRUE, JUMP_IF_TRUE -> {
+                JumpIfTrue(operationCode)
             }
             ONE_DIGIT_LESS_THAN_OPERATION_CODE, LESS_THAN_OPERATION_CODE -> {
                 LessThan(operationCode)
@@ -112,3 +117,5 @@ class IntcodeComputer {
 
 
 }
+
+data class InstructionPointer(var position: Int = 0)

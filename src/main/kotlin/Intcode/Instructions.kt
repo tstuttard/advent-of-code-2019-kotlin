@@ -8,6 +8,10 @@ const val STORE_OPERATION_CODE = "03"
 const val ONE_DIGIT_STORE_OPERATION_CODE = "3"
 const val OUTPUT_OPERATION_CODE = "04"
 const val ONE_DIGIT_OUTPUT_OPERATION_CODE = "4"
+const val JUMP_IF_TRUE = "05"
+const val ONE_DIGIT_JUMP_IF_TRUE = "5"
+const val JUMP_IF_FALSE = "06"
+const val ONE_DIGIT_JUMP_IF_FALSE = "6"
 const val LESS_THAN_OPERATION_CODE = "07"
 const val ONE_DIGIT_LESS_THAN_OPERATION_CODE = "7"
 const val EQUALS_OPERATION_CODE = "08"
@@ -20,17 +24,61 @@ class HaltInstruction: Instruction {
 
 }
 
+class JumpIfFalse(operationCode: String) : BaseInstruction(operationCode), AddressInstruction
+{
+    override var numberOfParameters: Int = 3
+
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer.position + 1] else memory[memory[instructionPointer.position + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer.position + 2] else memory[memory[instructionPointer.position + 2]]
+
+        if (firstParameterValue == 0) {
+            instructionPointer.position = secondParameterValue
+        } else {
+            instructionPointer.position += numberOfParameters
+        }
+    }
+
+    fun moveOperationsPointer(instructionPointer: Int): Int {
+        return instructionPointer + numberOfParameters
+    }
+
+}
+
+class JumpIfTrue(operationCode: String) : BaseInstruction(operationCode), AddressInstruction
+{
+    override var numberOfParameters: Int = 3
+
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer.position + 1] else memory[memory[instructionPointer.position + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer.position + 2] else memory[memory[instructionPointer.position + 2]]
+
+        if (firstParameterValue != 0) {
+            instructionPointer.position = secondParameterValue
+        } else {
+            instructionPointer.position += numberOfParameters
+        }
+    }
+
+    fun moveOperationsPointer(instructionPointer: Int): Int {
+        return instructionPointer + numberOfParameters
+    }
+
+}
+
 class Plus(operationCode: String) : BaseInstruction(operationCode), AddressInstruction
 {
     override val numberOfParameters: Int = 4
 
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
 
 
-        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
-        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
-        val storageAddress = memory[instructionPointer + 3]
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer.position + 1] else memory[memory[instructionPointer.position + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer.position + 2] else memory[memory[instructionPointer.position + 2]]
+        val storageAddress = memory[instructionPointer.position + 3]
         memory[storageAddress] = firstParameterValue + secondParameterValue
+
+        instructionPointer.position += numberOfParameters
     }
 
 }
@@ -39,22 +87,26 @@ class Multiply(operationCode: String) : BaseInstruction(operationCode), AddressI
 {
     override val numberOfParameters: Int = 4
 
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
-        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
-        val storageAddress = memory[instructionPointer + 3]
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer.position + 1] else memory[memory[instructionPointer.position + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer.position + 2] else memory[memory[instructionPointer.position + 2]]
+        val storageAddress = memory[instructionPointer.position + 3]
         memory[storageAddress] = firstParameterValue * secondParameterValue
+
+        instructionPointer.position += numberOfParameters
     }
 }
 
 class LessThan(operationCode: String): BaseInstruction(operationCode), AddressInstruction
 {
     override val numberOfParameters: Int = 4
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
-        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
-        val storageAddress = memory[instructionPointer + 3]
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer.position + 1] else memory[memory[instructionPointer.position + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer.position + 2] else memory[memory[instructionPointer.position + 2]]
+        val storageAddress = memory[instructionPointer.position + 3]
         memory[storageAddress] = if (firstParameterValue < secondParameterValue) 1 else 0
+
+        instructionPointer.position += numberOfParameters
     }
 
 
@@ -63,11 +115,13 @@ class LessThan(operationCode: String): BaseInstruction(operationCode), AddressIn
 class Equals(operationCode: String): BaseInstruction(operationCode), AddressInstruction
 {
     override val numberOfParameters: Int = 4
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer + 1] else memory[memory[instructionPointer + 1]]
-        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer + 2] else memory[memory[instructionPointer + 2]]
-        val storageAddress = memory[instructionPointer + 3]
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val firstParameterValue =  if (getParameterMode(0) == '1') memory[instructionPointer.position + 1] else memory[memory[instructionPointer.position + 1]]
+        val secondParameterValue = if (getParameterMode(1) == '1') memory[instructionPointer.position + 2] else memory[memory[instructionPointer.position + 2]]
+        val storageAddress = memory[instructionPointer.position + 3]
         memory[storageAddress] = if (firstParameterValue == secondParameterValue) 1 else 0
+
+        instructionPointer.position += numberOfParameters
     }
 
 
@@ -78,9 +132,11 @@ class Store(operationCode: String, private val input: Int) : BaseInstruction(ope
     override val numberOfParameters: Int = 2
 
 
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val storageAddress = memory[instructionPointer + 1]
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val storageAddress = memory[instructionPointer.position + 1]
         memory[storageAddress] = input
+
+        instructionPointer.position += numberOfParameters
     }
 }
 
@@ -90,14 +146,16 @@ class Output(operationCode: String, private val output: ProgramOutput) : BaseIns
     override val numberOfParameters: Int = 2
 
 
-    override fun perform(memory: MutableList<Int>, instructionPointer: Int) {
-        val firstParameterPosition = instructionPointer + 1
+    override fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer) {
+        val firstParameterPosition = instructionPointer.position + 1
         val outputAddress = memory[firstParameterPosition]
         if (getParameterMode(0) == '1') {
             output.value = memory[firstParameterPosition]
         } else {
             output.value = memory[outputAddress]
         }
+
+        instructionPointer.position += numberOfParameters
 
     }
 }
@@ -129,10 +187,7 @@ interface AddressInstruction: Instruction {
 
     val numberOfParameters: Int
 
-    fun perform(memory: MutableList<Int>, instructionPointer:Int)
-    fun moveOperationsPointer(instructionPointer: Int): Int {
-        return instructionPointer + numberOfParameters
-    }
+    fun perform(memory: MutableList<Int>, instructionPointer: InstructionPointer)
 }
 
 interface Instruction {
